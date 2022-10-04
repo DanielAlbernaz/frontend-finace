@@ -1,3 +1,48 @@
+<script>
+import api from "@/services/api";
+import { defineComponent, onMounted } from '@vue/runtime-core';
+
+export default defineComponent({
+  setup() {
+    var result;       
+
+    const data = {
+      email: "daniel@daniel.com",
+      password: "123"
+    };
+
+    const qualquercoisa = () =>  api.get("auth/user/{UserId}").then((response) => (
+      console.log(response.data.data.token)
+    ));
+
+    const header = {
+      headers: {
+        Authorization: 'Bearer ' + qualquercoisa,
+      }
+    }
+
+    const asd = () =>  api.post("produtos", data, header).then((response) => (
+      console.log(response.data.data.token)
+    ));
+
+
+    var dataRegister = {
+      name: "Daniel",
+      email: "daniel@daniel.com",
+      password: "123"
+    };
+
+    const register = () =>  api.post("auth/register", dataRegister).then((response) => (
+      response.data.data.id
+    ));
+  
+    onMounted(qualquercoisa);
+    
+  },
+})
+</script>
+
+
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
