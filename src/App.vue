@@ -1,75 +1,75 @@
-<script>
-import api from "@/services/api";
-import { defineComponent, onMounted } from '@vue/runtime-core';
+<script lang="ts">
+import { defineComponent } from '@vue/runtime-core';
+import BarraLateral from '@/components/BarraLateral.vue';
+import FormularioGeral from '@/components/FormularioGeral.vue';
+import TerefaGeral from './components/TerefaGeral.vue';
+import ITarefa from './interfaces/ITarefa.vue';
+import BoxGeral from '@/components/BoxGeral.vue';
 
 export default defineComponent({
-  setup() {
-    var result;       
-
-    const data = {
-      email: "daniel@daniel.com",
-      password: "123"
-    };
-
-    const qualquercoisa = () =>  api.get("auth/user/{UserId}").then((response) => (
-      console.log(response.data.data.token)
-    ));
-
-    const header = {
-      headers: {
-        Authorization: 'Bearer ' + qualquercoisa,
-      }
+  name: 'App',
+  data () {
+    return {
+      tarefas: [] as typeof ITarefa[],
+      modoEscuroAtivo: false
     }
-
-    const asd = () =>  api.post("produtos", data, header).then((response) => (
-      console.log(response.data.data.token)
-    ));
-
-
-    var dataRegister = {
-      name: "Daniel",
-      email: "daniel@daniel.com",
-      password: "123"
-    };
-
-    const register = () =>  api.post("auth/register", dataRegister).then((response) => (
-      response.data.data.id
-    ));
-  
-    onMounted(qualquercoisa);
-    
   },
+  components: {
+    BarraLateral,
+    FormularioGeral,
+    TerefaGeral,
+    BoxGeral
+  },
+  computed: {
+    listaEstaVazia () : boolean {
+      return this.tarefas.length === 0
+    }
+  },
+  methods: {
+    salvarTarefa (tarefa: typeof ITarefa) {
+      this.tarefas.push(tarefa);
+    },
+    trocarTema (modoescuroAtivo: boolean) {
+      this.modoEscuroAtivo = modoescuroAtivo
+    }
+  }
 })
 </script>
 
 
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
+  <main class="columns is-gapless is-multiline" :class="{ 'modo-escuro': modoEscuroAtivo }">    
+    <div class="column is-one-quarter">
+      <BarraLateral @aoTemaAlterado="trocarTema" />
+    </div>
+    <div class="column is-three-quarter conteudo">
+      <FormularioGeral @aoSalvarTarefa="salvarTarefa" />
+      <div class="lista">
+        <TerefaGeral v-for="(tarefa, index) in tarefas" :key="index" :tarefa="tarefa"/>     
+
+         <BoxGeral v-if="listaEstaVazia">
+          Você não esta muito produtivo hoje :(
+        </BoxGeral>  
+      </div>     
+    </div>
+  </main>  
   <router-view/>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+<style>
+  .lista {
+    padding: 1.25rem;
   }
-}
+  main {
+    --bg-primario: #fff;
+    --texto-primario: #000;
+  }
+  main.modo-escuro {
+    --bg-primario: #2b2d42;
+    --texto-primario: #ddd;
+  }
+  .conteudo {
+    background-color: var(--bg-primario);
+  }
 </style>
+
