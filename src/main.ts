@@ -2,8 +2,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
-import store from './store'
 import '@fortawesome/fontawesome-free/js/all'
+import { key, store } from './store'
 
-createApp(App).use(store).use(router).mount('#app')
+createApp(App).use(store, key).use(router).mount('#app')
 
